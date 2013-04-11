@@ -26,6 +26,14 @@ public class SymfonyInterfacesHelper {
         });
     }
 
+    public static boolean isUrlGeneratorGenerateCall(PsiElement e) {
+        return isCallTo(e, new String[] {
+            "\\Symfony\\Component\\Routing\\Generator\\UrlGenerator.generate",
+            "\\Symfony\\Component\\Routing\\Router.generate",
+            "\\Symfony\\Bundle\\FrameworkBundle\\Controller\\Controller.generateUrl",
+        });
+    }
+
     private static boolean isCallTo(PsiElement e, String expectedMethodFQN) {
         return isCallTo(e, new String[] { expectedMethodFQN }, 1);
     }
@@ -49,6 +57,8 @@ public class SymfonyInterfacesHelper {
             return false;
         }
 
+        // TODO Use something like
+        // ((MethodReference)psiElement.getParent().getParent()).getType()
         Method method = (Method) resolvedReference;
         String methodFQN = method.getFQN(); // Something like "\Symfony\Bundle\FrameworkBundle\Controller\Controller.get"
         if (null == methodFQN) {
